@@ -8,17 +8,10 @@ const ROOMS_GRID : Vector2i = FLOOR_SIZE / ROOM_SIZE
 var cells : Array[Array] 
 var rooms : Array[Array]
 
+
 func _init() -> void:
 	init_rooms()
 	init_cells()
-	var player = Player.new(Vector2i(16,0))
-	#var wall = Wall.new(Vector2i(0,0))
-	#get_cell(Vector2i(15,0)).set_at_layer(player ,Cell.Layer.PLAYERS)
-	#get_cell(Vector2i(0,0)).set_at_layer(wall ,wall.layer)
-	player.move(self, Vector2i(1, 0))
-	#wall.after_player_turn(self)
-	print(self)
-	print(self.get_room(Vector2i(1,0)))
 
 
 func _to_string() -> String:
@@ -52,22 +45,14 @@ func init_rooms() -> void:
 func get_cell(pos : Vector2i) -> Cell:
 	return cells[pos.y][pos.x]
 
+func get_room_cell(pos : Vector2i) -> Room:
+	return get_room(pos / ROOM_SIZE)
+
+
 func get_room(pos : Vector2i) -> Room:
 	return rooms[pos.y][pos.x]
 
-@abstract class Thing:
-	
-	var layer : int
-	var position : Vector2i
-	
-	func _init(pos : Vector2i) -> void:
-		set_layer()
-		self.position = Vector2i(pos.x, pos.y)
-	
-	@abstract func _to_string() -> String
-	@abstract func set_layer() -> void
-	@abstract func after_player_turn(flor : Floor) -> void
-	@abstract func turn(flor : Floor) -> void
+
 
 
 class Cell:
@@ -124,71 +109,5 @@ class Room:
 	func get_cell(pos : Vector2i) -> Cell:
 		return cells[pos.y][pos.x]
 
-class Player extends Thing:
-	
-	var prev_position : Vector2i
-	
-	func _init(pos : Vector2i) -> void:
-		super(pos)
-		prev_position = position
-		#load all information from autoload here
-	
-	
-	func _to_string() -> String:
-		return "P"
-	
-	
-	func set_layer() -> void:
-		layer = Cell.Layer.PLAYERS
-	
-	func after_player_turn(_flor : Floor) -> void:
-		pass
-	func turn(_flor : Floor) -> void:
-		pass
-	
-	
-	func move(flor : Floor, direction : Vector2i) -> void:
-		prev_position = position
-		position = position + direction
-		flor.get_cell(prev_position).set_at_layer(null, layer)
-		flor.get_cell(position).set_at_layer(self, layer)
-		
-	
-	
-	func move_back(flor : Floor) -> void:
-		flor.get_cell(position).set_at_layer(null, layer)
-		flor.get_cell(prev_position).set_at_layer(self, layer)
-		position = prev_position
 
-class Wall extends Thing:
-	
-	enum WallType {
-		BRICK,
-		ROCK,
-		P_ROCK,
-		TORCH,
-		TOMBSTONE,
-		CASKET,
-	}
-	
-	
-	func _to_string() -> String:
-		return "#"
-	
-	
-	func set_layer() -> void:
-		layer = Cell.Layer.STATIC
-	
-	
-	func after_player_turn(flor : Floor) -> void:
-		var entity : Thing = (
-				flor.get_cell(position).
-				get_at_layer(Cell.Layer.PLAYERS)
-		)
-		if entity:
-			entity.move_back(flor)
-	
-	
-	func turn(_flor : Floor) -> void:
-		pass
 	
