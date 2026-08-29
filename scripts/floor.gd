@@ -7,12 +7,13 @@ const ROOMS_GRID : Vector2i = FLOOR_SIZE / ROOM_SIZE
 
 var cells : Array[Array] 
 var rooms : Array[Array]
+var player : Player
 
 
-func _init() -> void:
+func _init(player : Player) -> void:
 	init_rooms()
 	init_cells()
-
+	self.player = player
 
 func _to_string() -> String:
 	var string : String = ""
@@ -42,6 +43,7 @@ func init_rooms() -> void:
 			rooms[i].append(Room.new(Vector2i(j, i)))
 		
 	
+	
 func get_cell(pos : Vector2i) -> Cell:
 	return cells[pos.y][pos.x]
 
@@ -52,7 +54,8 @@ func get_room_cell(pos : Vector2i) -> Room:
 func get_room(pos : Vector2i) -> Room:
 	return rooms[pos.y][pos.x]
 
-
+func get_player() -> Player:
+	return player
 
 
 class Cell:

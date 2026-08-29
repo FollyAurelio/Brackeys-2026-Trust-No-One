@@ -3,6 +3,7 @@ extends Thing
 
 var prev_position : Vector2i
 var health = 5
+var inventory : Array[Item.Weapon] = [null, null, null, null, null, null, null, null]
 	
 func _init(pos : Vector2i) -> void:
 	super(pos)
@@ -37,4 +38,14 @@ func move_back(flor : Floor) -> void:
 
 func take_damage(damage : int) -> void:
 	health = move_toward(health, 0, damage)
-	
+
+
+func is_inventory_full() -> bool:
+	return not inventory.has(null)
+
+func add_inventory(weapon : Item.Weapon) -> void:
+	if not is_inventory_full():
+		inventory[inventory.find(null)] = weapon
+	else:
+		pass
+		#inventory full warning

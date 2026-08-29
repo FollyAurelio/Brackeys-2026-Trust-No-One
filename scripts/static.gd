@@ -10,7 +10,7 @@ class Wall extends Thing:
 		TOMBSTONE,
 		CASKET,
 	}
-	
+	var type : WallType
 	
 	func _to_string() -> String:
 		return "#"
@@ -21,12 +21,9 @@ class Wall extends Thing:
 	
 	
 	func after_player_turn(flor : Floor) -> void:
-		var entity : Thing = (
-				flor.get_cell(position).
-				get_at_layer(Floor.Cell.Layer.PLAYERS)
-		)
-		if entity:
-			entity.move_back(flor)
+		var player = flor.get_player()
+		if player.position == position:
+			player.move_back(flor)
 	
 	
 	func turn(_flor : Floor) -> void:
@@ -43,13 +40,10 @@ class Sludge extends Thing:
 		layer = Floor.Cell.Layer.STATIC
 	
 	func after_player_turn(flor : Floor) -> void:
-		var entity : Thing = (
-				flor.get_cell(position).
-				get_at_layer(Floor.Cell.Layer.PLAYERS)
-		)
-		if entity:
-			entity.take_damage(1)
-			flor.get_cell(position).set_at_layer(null, Floor.Cell.Layer.STATIC)
+		var player = flor.get_player()
+		if player.position == position:
+			player.take_damage(1)
+			remove(flor)
 	
 
 	func turn(_flor : Floor) -> void:
