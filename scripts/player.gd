@@ -36,7 +36,8 @@ func move_back(flor : Floor) -> void:
 	position = prev_position
 
 
-func take_damage(damage : int) -> void:
+
+func take_damage(damage : int, status : Status = null) -> void:
 	health = move_toward(health, 0, damage)
 
 
